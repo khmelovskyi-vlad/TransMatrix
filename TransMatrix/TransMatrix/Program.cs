@@ -10,70 +10,75 @@ namespace TransMatrix
     {
         static void Main(string[] args)
         {
-            int width, height;
-            int[,] matrix;
-            Matrix(out matrix, out width, out height);
-            Console.WriteLine("Your matrix is");
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                for (int j = 0; j < matrix.GetLength(1); j++)
-                {
-                    Console.Write(String.Format("{0,3}", matrix[i, j]));
-                }
-                Console.WriteLine("");
-            }
-            Console.WriteLine("Your transponing matrix is");
-            for (int i = 0; i < matrix.GetLength(1); i++)
-            {
-                for (int j = 0; j < matrix.GetLength(0); j++)
-                {
-                    Console.Write(String.Format("{0,3}", matrix[j, i]));
-                }
-                Console.WriteLine("");
-            }
+            Console.WriteLine("Transponing matrix");
+            int[,] matrix = ReadMatrix();
+            WriteMatrix(matrix);
+            WriteTransMartix(matrix);
             Console.ReadKey();
         }
-        static void Matrix(out int[,] mat, out int width, out int height)
+        static int[,] ReadMatrix()
         {
-            Console.WriteLine("Transpose matrices");
-            width = Enter("matrix weiht");
-            height = Enter("matrix height");
-            mat = new int[width, height];
-            Console.WriteLine("Enter matrix");
+            var (n, m) = ReadBorder();
+            Console.WriteLine("Write matrix");
+            int[,] matrix = new int[n, m];
+            for(int i = 0; i < n; i++)
+            {
+                for(int j = 0; j < m; j++)
+                {
+                    matrix[i, j] = ReadIntUntil(' ');
+                }
+                Console.WriteLine("");
+            }
+            return matrix;
+            
+        }
+        static int ReadIntUntil(params char[] unitSymbol)
+        {
+            StringBuilder sb = new StringBuilder();
             while (true)
             {
                 try
                 {
-
-                    for (int i = 0; i < mat.GetLength(0); i++)
+                    var key = Console.ReadKey(true);
+                    if (key.Key != ConsoleKey.Enter)
                     {
-                        for (int j = 0; j < mat.GetLength(1); j++)
+                        Console.Write(key.KeyChar);
+                        if (key.Key == ConsoleKey.Escape)
                         {
-                            var key = Console.ReadKey();
-                            if (key.Key == ConsoleKey.Escape)
-                            {
-                                throw new OperationCanceledException();
-                            }
-                            var line = Console.ReadLine();
-                            var keyLine = $"{key.KeyChar}{line}";
-                            mat[i, j] = Convert.ToInt32(keyLine);
+                            throw new OperationCanceledException();
+                        }
+                        else if (unitSymbol.Contains(key.KeyChar))
+                        {
+                            return Int32.Parse(sb.ToString());
+                        }
+                        else
+                        {
+                            sb.Append(key.KeyChar);
                         }
                     }
-                    break;
                 }
                 catch (FormatException ex)
                 {
-                    Console.WriteLine($"Bed input {ex.Message}, try again or click enter");
+                    sb.Remove(0, sb.Length);
+                    Console.Write($"Bed input {ex.Message}, try again or click Escape ");
                 }
             }
         }
-        static int Enter(string ent)
+        static (int n, int m) ReadBorder()
+        {
+            Console.WriteLine("Enter matrix size n:m");
+            Console.Write("n = ");
+            var n = ReadInt();
+            Console.Write("m = ");
+            var m = ReadInt();
+            return (n, m);
+        }
+        static int ReadInt()
         {
             do
             {
                 try
                 {
-                    Console.WriteLine($"Enter {ent}");
                     var key = Console.ReadKey();
                     if (key.Key == ConsoleKey.Escape)
                     {
@@ -88,6 +93,30 @@ namespace TransMatrix
                     Console.WriteLine($"Bed input {ex.Message}, try again or click escape");
                 }
             } while (true);
+        }
+        static void WriteMatrix (int[,] matrix)
+        {
+            Console.WriteLine("Your matrix is: ");
+            for(int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    Console.Write($"{matrix[i, j]}\t");
+                }
+                Console.WriteLine();
+            }
+        }
+        static void WriteTransMartix (int[,] matrix)
+        {
+            Console.WriteLine("Transponing matrix is: ");
+            for (int i = 0; i < matrix.GetLength(1); i++)
+            {
+                for(int j = 0; j < matrix.GetLength(0); j++)
+                {
+                    Console.Write($"{matrix[j, i]}\t");
+                }
+                Console.WriteLine();
+            }
         }
     }
 }
