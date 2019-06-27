@@ -47,6 +47,10 @@ namespace TransMatrix
                         {
                             throw new OperationCanceledException();
                         }
+                        else if (key.Key == ConsoleKey.Backspace)
+                        {
+                            sb.Remove(sb.Length - 1, 1);
+                        }
                         else if (unitSymbol.Contains(key.KeyChar))
                         {
                             return Int32.Parse(sb.ToString());
